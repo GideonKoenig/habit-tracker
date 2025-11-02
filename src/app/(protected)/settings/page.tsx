@@ -13,16 +13,17 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 export default function SettingsPage() {
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const { data, isLoading } = api.settings.getSettings.useQuery();
     const update = api.settings.updateCutoffHour.useMutation();
-    const inputRef = useRef<HTMLInputElement | null>(null);
 
-    if (isLoading)
+    if (isLoading) {
         return (
             <div className="text-text-muted flex items-center justify-center py-20 text-sm">
                 Loading…
             </div>
         );
+    }
 
     const handleSave = async () => {
         const raw = Number(inputRef.current?.value ?? 3);

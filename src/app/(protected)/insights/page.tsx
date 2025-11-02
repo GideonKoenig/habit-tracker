@@ -35,13 +35,30 @@ type Range = "7d" | "30d" | "365d";
 type Resolution = "daily" | "weekly";
 
 export default function InsightsPage() {
-    const { data: settings } = api.settings.getSettings.useQuery();
-    const cutoff = settings?.cutoffHour ?? 3;
-    const endDayId = resolveLogicalDay(new Date(), cutoff);
     const [range, setRange] = useState<Range>("30d");
     const [resolution, setResolution] = useState<Resolution>("daily");
     const [mode, setMode] = useState<"relative" | "absolute">("relative");
+    const { data: settings, isLoading: isLoadingSettings } =
+        api.settings.getSettings.useQuery();
 
+    if (isLoadingSettings) {
+        return (
+            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
+                Loading…
+            </div>
+        );
+    }
+
+    if (!settings) {
+        return (
+            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
+                Failed to load settings.
+            </div>
+        );
+    }
+
+    const cutoff = settings.cutoffHour ?? 3;
+    const endDayId = resolveLogicalDay(new Date(), cutoff);
     const { data, isLoading } = api.analytics.getRangeSummary.useQuery({
         range,
         resolution,

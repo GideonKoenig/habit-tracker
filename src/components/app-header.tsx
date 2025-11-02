@@ -17,6 +17,7 @@ export default function AppHeader() {
     const user = useUser();
     const pathname = usePathname();
     const router = useRouter();
+
     const initials = getInitials(user?.name);
 
     const handleLogout = async () => {

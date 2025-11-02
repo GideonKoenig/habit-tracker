@@ -1,104 +1,158 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { api } from "@/trpc/react";
+import { cn } from "@/lib/utils";
 import type { Task } from "@/lib/tasks";
 
 export function MultiTaskCard(props: {
     task: Task;
     value: number;
+    currentDate: Date;
     editLayout: boolean;
-    onIncrement: () => void;
-    onDecrement: () => void;
+    values: Record<string, number>;
 }) {
-    const { task, value, editLayout, onIncrement, onDecrement } = props;
-    const target = task.targetPerDay ?? 0;
-    const goalReached = target > 0 && value >= target;
+    const utils = api.useUtils();
+    const upsertLog = api.dailyLog.upsertForDate.useMutation({
+        onSuccess: async () => {
+            await utils.dailyLog.getForUser.invalidate();
+        },
+    });
+
+    const weekday = (props.currentDate.getUTCDay() + 6) % 7;
+    const scheduledToday = props.task.activeWeekdays[weekday];
+    const isDisabled = props.editLayout || !scheduledToday;
+    const target = props.task.targetPerDay ?? 0;
+    const goalReached = target > 0 && props.value >= target;
+
+    const statusText = props.editLayout
+        ? "Layout locked"
+        : !scheduledToday
+          ? "Not scheduled today"
+          : goalReached
+            ? "Target reached"
+            : target > 0
+              ? "Keep going"
+              : "Track freely";
+
+    const handleIncrement = async () => {
+        const nextValue = props.value + 1;
+        const nextLog = {
+            ...props.values,
+            [props.task.id]: nextValue,
+        };
+        await upsertLog.mutateAsync({
+            date: props.currentDate,
+            data: nextLog,
+        });
+    };
+
+    const handleDecrement = async () => {
+        const nextValue = Math.max(0, props.value - 1);
+        const nextLog = {
+            ...props.values,
+            [props.task.id]: nextValue,
+        };
+        await upsertLog.mutateAsync({
+            date: props.currentDate,
+            data: nextLog,
+        });
+    };
+
     return (
         <div
-            className={`group relative flex h-full flex-col justify-between gap-4 rounded-lg border px-5 py-5 transition will-change-transform ${
-                goalReached
-                    ? "border-border/58 bg-bg-elevated/78"
-                    : "border-accent-pink/52 bg-accent-pink/36"
-            } ${
-                editLayout
-                    ? "cursor-default opacity-75"
-                    : "cursor-pointer hover:-translate-y-px hover:shadow-lg"
-            }`}
+            className={cn(
+                "grid h-full w-full grid-cols-[1fr_auto] gap-2 rounded-2xl border-2 px-6 py-6",
+                goalReached && "border-border bg-bg-elevated",
+                !goalReached && "border-accent-pink/70 bg-accent-pink/25",
+                isDisabled && "cursor-default opacity-60",
+                !isDisabled && "hover:scale-[1.01]",
+                props.editLayout && "rounded-br-none",
+            )}
         >
-            <div className="flex items-start justify-between">
-                <div className="flex flex-col gap-1">
-                    <span
-                        className={`text-base font-semibold ${
-                            goalReached ? "text-text-muted" : "text-text"
-                        }`}
-                    >
-                        {task.label}
-                    </span>
-                    <span
-                        className={`text-xs tracking-[0.24em] uppercase ${
-                            goalReached ? "text-text-muted" : "text-text/70"
-                        }`}
-                    >
-                        {target > 0 ? `Target ${target}` : "No target"}
-                    </span>
-                </div>
-                <span
-                    className={`flex items-center gap-1 rounded-full border px-2 py-1 text-[0.65rem] font-medium tracking-[0.16em] uppercase ${
-                        goalReached
-                            ? "text-text-muted border-border/60"
-                            : "bg-accent-pink/82 text-text border-transparent"
-                    }`}
-                >
-                    {value}
-                    {target > 0 ? ` / ${target}` : ""}
-                </span>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={editLayout}
-                    onClick={onDecrement}
-                    className={`h-11 w-11 text-lg font-semibold transition ${
-                        goalReached
-                            ? "text-text-muted border-border/68 bg-bg-elevated/72"
-                            : "bg-accent-pink/70 text-text hover:bg-accent-pink/64 border-transparent"
-                    }`}
+            <span
+                className={cn(
+                    "text-lg font-semibold tracking-tight",
+                    goalReached && "text-text-muted",
+                    !goalReached && "text-text",
+                )}
+            >
+                {props.task.label}
+            </span>
+            <span
+                className={cn(
+                    "flex items-center rounded-full px-4 py-1 text-xs font-semibold tracking-widest",
+                    goalReached && "border-border text-text-muted border",
+                    !goalReached && "bg-text text-bg border border-transparent",
+                )}
+            >
+                {target > 0 ? `${props.value} / ${target}` : props.value}
+            </span>
+
+            <div className="col-span-2 flex h-full min-h-0 gap-2">
+                <button
+                    type="button"
+                    aria-label="Decrease count"
+                    disabled={isDisabled}
+                    onClick={handleDecrement}
+                    className={cn(
+                        "flex flex-1 items-center justify-center rounded-xl border-2 px-5 text-3xl leading-none font-semibold",
+                        goalReached &&
+                            "border-accent-pink/60 bg-accent-pink/35 text-text",
+                        !goalReached &&
+                            "border-accent-pink/80 bg-accent-pink/80 text-text",
+                        isDisabled && "cursor-default opacity-50",
+                        !isDisabled && "cursor-pointer hover:scale-[1.01]",
+                    )}
                 >
                     −
-                </Button>
-                <div className="flex flex-col items-center gap-1 text-center">
+                </button>
+                <div
+                    className={cn(
+                        "flex flex-col items-center justify-center gap-1 rounded-xl border px-5 py-4 text-center",
+                        goalReached && "border-border bg-bg-elevated",
+                        !goalReached && "border-border/60 bg-bg-elevated/70",
+                    )}
+                >
                     <span
-                        className={`text-3xl font-semibold ${
-                            goalReached ? "text-text-muted" : "text-text"
-                        }`}
+                        className={cn(
+                            "text-xs font-semibold tracking-widest uppercase",
+                            (goalReached || isDisabled) && "text-text-muted",
+                            !goalReached && !isDisabled && "text-text/70",
+                        )}
+                        title={statusText}
                     >
-                        {value}
+                        {statusText}
                     </span>
-                    <span className="text-text-muted text-xs">
+                    <span
+                        className={cn(
+                            "text-3xl font-semibold",
+                            goalReached && "text-text-muted",
+                            !goalReached && "text-text",
+                        )}
+                    >
+                        {props.value}
+                    </span>
+                    <span className="text-text-muted text-xs tracking-widest uppercase">
                         Logged today
                     </span>
                 </div>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={editLayout}
-                    onClick={onIncrement}
-                    className={`h-11 w-11 text-lg font-semibold transition ${
-                        goalReached
-                            ? "border-[color-mix(in_oklch,var(--border-strong)68%,transparent)]"
-                            : "border-transparent bg-[color-mix(in_oklch,var(--accent-2)70%,transparent)] text-[--color-text-contrast] hover:bg-[color-mix(in_oklch,var(--accent-2)64%,transparent)]"
-                    }`}
+                <button
+                    type="button"
+                    aria-label="Increase count"
+                    disabled={isDisabled}
+                    onClick={handleIncrement}
+                    className={cn(
+                        "flex flex-1 items-center justify-center rounded-xl border-2 px-5 text-3xl leading-none font-semibold",
+                        goalReached &&
+                            "border-accent-pink/60 bg-accent-pink/35 text-text",
+                        !goalReached &&
+                            "border-accent-pink/80 bg-accent-pink/80 text-text",
+                        isDisabled && "cursor-default opacity-50",
+                        !isDisabled && "cursor-pointer hover:scale-[1.01]",
+                    )}
                 >
                     +
-                </Button>
+                </button>
             </div>
-            <div
-                className={`pointer-events-none absolute inset-0 rounded-lg transition ${
-                    goalReached
-                        ? "bg-transparent"
-                        : "bg-accent-pink/14 opacity-0 group-hover:opacity-100"
-                }`}
-            />
         </div>
     );
 }

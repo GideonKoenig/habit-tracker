@@ -20,6 +20,7 @@ export function TaskForm(props: {
     currentSet: TaskSet | undefined;
     today: Date;
 }) {
+    const utils = api.useUtils();
     const [newTask, setNewTask] = useState<Partial<Task>>({
         id: crypto.randomUUID(),
         label: "",
@@ -27,8 +28,6 @@ export function TaskForm(props: {
         pointsPerUnit: 10,
         activeWeekdays: [true, true, true, true, true, false, false],
     });
-
-    const utils = api.useUtils();
     const upsert = api.taskSet.upsertForDate.useMutation({
         onSuccess: async () => {
             await utils.taskSet.getLatestForUser.invalidate();
@@ -68,7 +67,7 @@ export function TaskForm(props: {
             <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_10rem_7rem_7rem] md:gap-x-3 md:gap-y-5">
                 <Input
                     placeholder="Name"
-                    value={newTask.label}
+                    value={newTask.label ?? ""}
                     onChange={(event) =>
                         setNewTask({ ...newTask, label: event.target.value })
                     }
@@ -82,7 +81,7 @@ export function TaskForm(props: {
                 <Input
                     type="number"
                     className="w-full text-center [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    value={newTask.pointsPerUnit}
+                    value={newTask.pointsPerUnit ?? ""}
                     onChange={(e) =>
                         setNewTask({
                             ...newTask,
@@ -95,7 +94,11 @@ export function TaskForm(props: {
                     type="number"
                     placeholder="Target"
                     className="w-full [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    value={newTask.type === "multi" ? newTask.targetPerDay : ""}
+                    value={
+                        newTask.type === "multi"
+                            ? (newTask.targetPerDay ?? "")
+                            : ""
+                    }
                     onChange={(e) =>
                         setNewTask({
                             ...newTask,

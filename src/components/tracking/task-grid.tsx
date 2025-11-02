@@ -10,38 +10,41 @@ export function TaskGrid(props: {
     onDraftChange: (layout: Layout[] | null) => void;
     children: React.ReactNode;
 }) {
-    const { layoutItems, isEditing, onDraftChange, children } = props;
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [width, setWidth] = useState<number>(1200);
+
     useEffect(() => {
         if (!containerRef.current) return;
-        const ro = new ResizeObserver((entries) => {
-            const w = entries[0]?.contentRect.width;
-            if (typeof w === "number") setWidth(w);
+        const observer = new ResizeObserver((entries) => {
+            const entry = entries[0];
+            const width = entry?.contentRect.width;
+            if (width !== undefined) setWidth(width);
         });
-        ro.observe(containerRef.current);
-        return () => ro.disconnect();
+        observer.observe(containerRef.current);
+        return () => observer.disconnect();
     }, []);
+
     return (
         <div ref={containerRef}>
             <Responsive
                 className="layout"
-                layouts={{ lg: layoutItems }}
+                layouts={{ lg: props.layoutItems }}
                 width={width}
-                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 560, xxs: 0 }}
-                cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+                breakpoints={{ lg: 1024, md: 768, sm: 640 }}
+                cols={{ lg: 12, md: 10, sm: 6 }}
                 rowHeight={36}
                 margin={[12, 12]}
                 containerPadding={[0, 12]}
-                compactType={null}
-                isDraggable={isEditing}
-                isResizable={isEditing}
+                compactType="vertical"
+                preventCollision={false}
+                isDraggable={props.isEditing}
+                isResizable={props.isEditing}
                 onLayoutChange={(layout) => {
-                    if (!isEditing) return;
-                    onDraftChange(layout as unknown as Layout[]);
+                    if (!props.isEditing) return;
+                    props.onDraftChange(layout);
                 }}
             >
-                {children}
+                {props.children}
             </Responsive>
         </div>
     );

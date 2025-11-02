@@ -12,30 +12,15 @@ import { TaskRow } from "@/components/tasks/task-row";
 import { DEFAULT_CUTOFF_HOUR } from "@/lib/settings";
 
 export function TaskList() {
-    const { data: settings } = api.settings.getSettings.useQuery();
-    const cutoff = settings?.cutoffHour ?? DEFAULT_CUTOFF_HOUR;
-    const today = resolveLogicalDay(new Date(), cutoff);
-
-    const { data: set } = api.taskSet.getLatestForUser.useQuery();
     const utils = api.useUtils();
+    const { data: settings } = api.settings.getSettings.useQuery();
+    const { data: set } = api.taskSet.getLatestForUser.useQuery();
     const upsert = api.taskSet.upsertForDate.useMutation({
         onSuccess: async () => {
             await utils.taskSet.getLatestForUser.invalidate();
-            await utils.taskSet.getForDate.invalidate({ date: today });
+            await utils.taskSet.getForUser.invalidate();
         },
     });
-
-    const handleDelete = async (taskId: string) => {
-        if (!set) return;
-        const tasks = set.tasks.filter((task) => task.id !== taskId);
-        await upsert.mutateAsync({
-            taskSet: {
-                tasks,
-                layout: set.layout,
-            },
-            date: today,
-        });
-    };
 
     if (!set) {
         return (
@@ -46,6 +31,20 @@ export function TaskList() {
             </Card>
         );
     }
+
+    const cutoff = settings?.cutoffHour ?? DEFAULT_CUTOFF_HOUR;
+    const today = resolveLogicalDay(new Date(), cutoff);
+
+    const handleDelete = async (taskId: string) => {
+        const tasks = set.tasks.filter((task) => task.id !== taskId);
+        await upsert.mutateAsync({
+            taskSet: {
+                tasks,
+                layout: set.layout,
+            },
+            date: today,
+        });
+    };
 
     return (
         <Card className="bg-bg-elevated/60 backdrop-blur-sm">
