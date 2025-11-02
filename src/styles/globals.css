@@ -1,31 +1,74 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
+    --color-bg: oklch(8% 0.01 270);
+    --color-bg-elevated: oklch(12% 0.01 270);
+    --color-bg-hover: oklch(16% 0.01 270);
+
+    --color-text: oklch(96% 0.005 270);
+    --color-text-muted: oklch(68% 0.01 270);
+
+    --color-border: oklch(25% 0.01 270);
+
+    --color-accent-pink: oklch(70% 0.15 340);
+    --color-accent-red: oklch(65% 0.18 15);
+    --color-accent-purple: oklch(68% 0.14 300);
+    --color-accent-blue: oklch(72% 0.12 260);
+
+    --color-success: oklch(75% 0.15 150);
+    --color-warning: oklch(85% 0.15 85);
+    --color-error: oklch(65% 0.18 15);
+}
+
+:root {
     --font-sans:
         var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
+}
 
-    --color-bg: oklch(0.24 0.03 255);
-    --color-bg-light: oklch(0.3 0.03 255);
-    --color-bg-dark: oklch(0.18 0.02 255);
+@layer base {
+    * {
+        border-color: var(--color-border);
+        outline: none;
+    }
 
-    --color-text: oklch(0.98 0 0);
-    --color-text-muted: oklch(0.72 0.03 255);
-    --color-text-contrast: oklch(1 0 0);
-
-    --color-accent: oklch(0.6 0.16 152);
-
-    --color-border: oklch(0.36 0.03 255);
-    --color-ring: var(--color-accent);
-
-    --color-success: oklch(0.66 0.14 152);
-    --color-error: oklch(0.65 0.24 25);
-    --color-warning: oklch(0.77 0.18 80);
-
-    --color-topic-organigramm: oklch(0.74 0.16 152);
-    --color-topic-bpmn: oklch(0.6 0.08 200);
-    --color-topic-workflow: oklch(0.66 0.2 255);
-    --color-topic-ml: oklch(0.82 0.2 85);
-    --color-topic-credentials: oklch(0.72 0.21 25);
+    body {
+        background-color: var(--color-bg);
+        background-image:
+            radial-gradient(
+                1200px 1200px at 10% 8%,
+                color-mix(in oklch, var(--color-accent-pink) 22%, transparent)
+                    0%,
+                transparent 60%
+            ),
+            radial-gradient(
+                900px 900px at 88% 12%,
+                color-mix(in oklch, var(--color-accent-red) 20%, transparent) 0%,
+                transparent 60%
+            ),
+            radial-gradient(
+                1100px 1100px at 78% 82%,
+                color-mix(in oklch, var(--color-accent-purple) 18%, transparent)
+                    0%,
+                transparent 65%
+            ),
+            radial-gradient(
+                950px 950px at 18% 88%,
+                color-mix(in oklch, var(--color-accent-blue) 14%, transparent)
+                    0%,
+                transparent 65%
+            ),
+            linear-gradient(
+                180deg,
+                oklch(10% 0 270 / 0) 0%,
+                oklch(16% 0 270 / 0.12) 100%
+            );
+        background-repeat: no-repeat;
+        background-attachment: fixed, fixed, fixed, fixed, fixed;
+        color: var(--color-text);
+    }
 }

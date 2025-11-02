@@ -3,6 +3,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "@/server/db";
 import { auth } from "@/server/auth";
+import { env } from "@/env";
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
     const session = await auth.api.getSession({ headers: opts.headers });
@@ -31,8 +32,7 @@ export const createTRPCRouter = t.router;
 const timingMiddleware = t.middleware(async ({ next, path }) => {
     const start = Date.now();
 
-    if (t._config.isDev) {
-        // artificial delay in dev
+    if (env.NODE_ENV !== "production") {
         const waitMs = Math.floor(Math.random() * 400) + 100;
         await new Promise((resolve) => setTimeout(resolve, waitMs));
     }

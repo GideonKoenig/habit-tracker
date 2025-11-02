@@ -17,17 +17,17 @@ const geist = Geist({
     variable: "--font-geist-sans",
 });
 
-export default function RootLayout({
-    children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout(
+    props: Readonly<{ children: React.ReactNode }>,
+) {
     return (
         <html
             lang="en"
             suppressHydrationWarning
             className={`${geist.variable}`}
         >
-            <body>
-                <TRPCReactProvider>{children}</TRPCReactProvider>
+            <body className="bg-bg relative h-dvh w-dvw">
+                <TRPCReactProvider>{props.children}</TRPCReactProvider>
             </body>
         </html>
     );

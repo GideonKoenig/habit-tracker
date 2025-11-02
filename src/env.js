@@ -6,12 +6,12 @@ export const env = createEnv({
         NODE_ENV: z
             .enum(["development", "test", "production"])
             .default("development"),
-        PORT: z.number().default(3000),
+        PORT: z.coerce.number().default(3000),
         DATABASE_URL: z.string().url(),
         BETTER_AUTH_SECRET: z.string(),
-        BETTER_AUTH_URL: z.string().url(),
-        GOOGLE_CLIENT_ID: z.string().url(),
-        GOOGLE_CLIENT_SECRET: z.string().url(),
+        BETTER_AUTH_URL: z.string().url().optional(),
+        GOOGLE_CLIENT_ID: z.string(),
+        GOOGLE_CLIENT_SECRET: z.string(),
     },
     client: {},
     runtimeEnv: {
