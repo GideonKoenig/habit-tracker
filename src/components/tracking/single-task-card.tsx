@@ -72,11 +72,11 @@ export function SingleTaskCard(props: {
     const isDisabled = props.editLayout || !scheduledToday;
 
     const statusText = props.editLayout
-        ? "Layout locked"
+        ? "Locked"
         : !scheduledToday
-          ? "Not scheduled today"
+          ? "Not scheduled"
           : completed
-            ? "Completed today"
+            ? "Completed"
             : "Tap to complete";
 
     const handleToggle = () => {

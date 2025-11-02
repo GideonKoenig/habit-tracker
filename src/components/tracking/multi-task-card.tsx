@@ -73,11 +73,11 @@ export function MultiTaskCard(props: {
     const goalReached = target > 0 && props.value >= target;
 
     const statusText = props.editLayout
-        ? "Layout locked"
+        ? "Locked"
         : !scheduledToday
-          ? "Not scheduled today"
+          ? "Not scheduled"
           : goalReached
-            ? "Target reached"
+            ? "Completed"
             : target > 0
               ? "Keep going"
               : "Track freely";
