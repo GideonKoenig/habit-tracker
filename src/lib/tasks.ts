@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { RouterOutputs } from "@/trpc/react";
 
 export const taskTypeSchema = z.enum(["single", "multi"]);
 
@@ -35,6 +36,8 @@ export type TaskType = z.infer<typeof taskTypeSchema>;
 export type TaskSet = z.infer<typeof taskSetSchema>;
 export type TaskLayout = z.infer<typeof taskLayoutSchema>;
 export type TaskLayoutPanel = z.infer<typeof panelSchema>;
+
+export type TaskSetEntry = RouterOutputs["taskSet"]["getForUser"][number];
 
 export const DEFAULT_TASK_LAYOUT: TaskLayout = { panels: [] };
 

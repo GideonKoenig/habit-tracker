@@ -22,8 +22,52 @@ export default function Home() {
         api.dailyLog.getForUser.useQuery();
 
     const updateLayoutForToday = api.taskSet.updateLayoutForDate.useMutation({
-        onSuccess: async () => {
+        onMutate: async (variables) => {
+            await utils.taskSet.getForUser.cancel();
+            await utils.taskSet.getForDate.cancel({ date: variables.date });
+            const previousTaskSets = utils.taskSet.getForUser.getData();
+            const previousForDate = utils.taskSet.getForDate.getData({
+                date: variables.date,
+            });
+            if (!previousTaskSets) {
+                return { previousTaskSets, previousForDate };
+            }
+            const activeForDate = findActiveTaskSetForDate(
+                previousTaskSets,
+                variables.date,
+            );
+            if (!activeForDate) {
+                return { previousTaskSets, previousForDate };
+            }
+            const nextTaskSets = previousTaskSets.map((entry) =>
+                entry.id === activeForDate.id
+                    ? { ...entry, layout: variables.layout }
+                    : entry,
+            );
+            const updatedActive = nextTaskSets.find(
+                (entry) => entry.id === activeForDate.id,
+            )!;
+            utils.taskSet.getForUser.setData(undefined, nextTaskSets);
+            utils.taskSet.getForDate.setData(
+                { date: variables.date },
+                updatedActive,
+            );
+            return { previousTaskSets, previousForDate };
+        },
+        onError: (_error, variables, context) => {
+            if (!context) return;
+            utils.taskSet.getForUser.setData(
+                undefined,
+                context.previousTaskSets,
+            );
+            utils.taskSet.getForDate.setData(
+                { date: variables.date },
+                context.previousForDate,
+            );
+        },
+        onSettled: async (_result, _error, variables) => {
             await utils.taskSet.getForUser.invalidate();
+            await utils.taskSet.getForDate.invalidate({ date: variables.date });
         },
     });
 

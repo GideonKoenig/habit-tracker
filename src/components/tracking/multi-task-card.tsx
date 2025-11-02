@@ -12,8 +12,57 @@ export function MultiTaskCard(props: {
 }) {
     const utils = api.useUtils();
     const upsertLog = api.dailyLog.upsertForDate.useMutation({
-        onSuccess: async () => {
+        onMutate: async (variables) => {
+            await utils.dailyLog.getForUser.cancel();
+            await utils.dailyLog.getForDate.cancel({ date: variables.date });
+            const previousAll = utils.dailyLog.getForUser.getData();
+            const previousForDate = utils.dailyLog.getForDate.getData({
+                date: variables.date,
+            });
+            const nextAll = previousAll ? [...previousAll] : [];
+            const existingIndex = nextAll.findIndex(
+                (entry) => entry.date.getTime() === variables.date.getTime(),
+            );
+            const optimisticEntry =
+                existingIndex >= 0
+                    ? { ...nextAll[existingIndex]!, data: variables.data }
+                    : {
+                          id:
+                              previousForDate?.id ??
+                              previousAll?.[0]?.id ??
+                              crypto.randomUUID(),
+                          userId:
+                              previousForDate?.userId ??
+                              previousAll?.[0]?.userId ??
+                              "",
+                          date: variables.date,
+                          data: variables.data,
+                      };
+            if (existingIndex >= 0) {
+                nextAll[existingIndex] = optimisticEntry;
+            } else {
+                nextAll.push(optimisticEntry);
+            }
+            utils.dailyLog.getForUser.setData(undefined, nextAll);
+            utils.dailyLog.getForDate.setData(
+                { date: variables.date },
+                optimisticEntry,
+            );
+            return { previousAll, previousForDate };
+        },
+        onError: (_error, variables, context) => {
+            if (!context) return;
+            utils.dailyLog.getForUser.setData(undefined, context.previousAll);
+            utils.dailyLog.getForDate.setData(
+                { date: variables.date },
+                context.previousForDate ?? undefined,
+            );
+        },
+        onSettled: async (_result, _error, variables) => {
             await utils.dailyLog.getForUser.invalidate();
+            await utils.dailyLog.getForDate.invalidate({
+                date: variables.date,
+            });
         },
     });
 
@@ -33,25 +82,25 @@ export function MultiTaskCard(props: {
               ? "Keep going"
               : "Track freely";
 
-    const handleIncrement = async () => {
+    const handleIncrement = () => {
         const nextValue = props.value + 1;
         const nextLog = {
             ...props.values,
             [props.task.id]: nextValue,
         };
-        await upsertLog.mutateAsync({
+        upsertLog.mutate({
             date: props.currentDate,
             data: nextLog,
         });
     };
 
-    const handleDecrement = async () => {
+    const handleDecrement = () => {
         const nextValue = Math.max(0, props.value - 1);
         const nextLog = {
             ...props.values,
             [props.task.id]: nextValue,
         };
-        await upsertLog.mutateAsync({
+        upsertLog.mutate({
             date: props.currentDate,
             data: nextLog,
         });
