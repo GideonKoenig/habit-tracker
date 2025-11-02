@@ -71,4 +71,60 @@
         background-attachment: fixed, fixed, fixed, fixed, fixed;
         color: var(--color-text);
     }
+
+    @media (min-width: 1024px) {
+        body {
+            background-image:
+                radial-gradient(
+                    1600px 1600px at 50% 45%,
+                    oklch(68% 0.04 280 / 0.18) 0%,
+                    transparent 72%
+                ),
+                radial-gradient(
+                    1200px 1200px at 10% 8%,
+                    color-mix(
+                            in oklch,
+                            var(--color-accent-pink) 22%,
+                            transparent
+                        )
+                        0%,
+                    transparent 60%
+                ),
+                radial-gradient(
+                    900px 900px at 88% 12%,
+                    color-mix(
+                            in oklch,
+                            var(--color-accent-red) 20%,
+                            transparent
+                        )
+                        0%,
+                    transparent 60%
+                ),
+                radial-gradient(
+                    1100px 1100px at 78% 82%,
+                    color-mix(
+                            in oklch,
+                            var(--color-accent-purple) 18%,
+                            transparent
+                        )
+                        0%,
+                    transparent 65%
+                ),
+                radial-gradient(
+                    950px 950px at 18% 88%,
+                    color-mix(
+                            in oklch,
+                            var(--color-accent-blue) 14%,
+                            transparent
+                        )
+                        0%,
+                    transparent 65%
+                ),
+                linear-gradient(
+                    180deg,
+                    oklch(10% 0 270 / 0) 0%,
+                    oklch(16% 0 270 / 0.12) 100%
+                );
+        }
+    }
 }
