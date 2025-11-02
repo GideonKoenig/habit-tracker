@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Habit Tracker",
     description:
         "A simple app to track your habits and see your progress over time.",
-    icons: [{ rel: "icon", url: "/favicon.ico" }],
+    icons: [{ rel: "icon", url: "/favicon.svg", type: "image/svg+xml" }],
 };
 
 const geist = Geist({
