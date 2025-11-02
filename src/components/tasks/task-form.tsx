@@ -17,7 +17,7 @@ import { TaskTypeSelector } from "@/components/tasks/task-type-selector";
 import { WeekdaySelector } from "@/components/tasks/weekday-selector";
 
 export function TaskForm(props: {
-    currentSet: TaskSet | undefined;
+    currentSet: TaskSet | null | undefined;
     today: Date;
 }) {
     const utils = api.useUtils();
