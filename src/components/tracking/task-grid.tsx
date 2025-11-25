@@ -31,7 +31,7 @@ export function TaskGrid(props: {
                 layouts={{ lg: props.layoutItems }}
                 width={width}
                 breakpoints={{ lg: 1024, md: 768, sm: 640 }}
-                cols={{ lg: 12, md: 10, sm: 6 }}
+                cols={{ lg: 20, md: 16, sm: 10 }}
                 rowHeight={36}
                 margin={[12, 12]}
                 containerPadding={[0, 12]}
