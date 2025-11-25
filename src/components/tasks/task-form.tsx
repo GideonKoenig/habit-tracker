@@ -36,7 +36,11 @@ export function TaskForm(props: {
     });
 
     const handleSubmit = async () => {
-        const taskResult = taskSchema.safeParse(newTask);
+        const taskToSubmit = {
+            ...newTask,
+            pointsPerUnit: newTask.pointsPerUnit ?? 10,
+        };
+        const taskResult = taskSchema.safeParse(taskToSubmit);
         if (!taskResult.success) return;
 
         const tasks = [...(props.currentSet?.tasks ?? []), taskResult.data];
@@ -80,14 +84,17 @@ export function TaskForm(props: {
                 />
                 <Input
                     type="number"
-                    className="w-full text-center [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    value={newTask.pointsPerUnit ?? ""}
-                    onChange={(e) =>
+                    placeholder="Points"
+                    className="w-full [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    value={newTask.pointsPerUnit?.toString() ?? ""}
+                    onChange={(e) => {
+                        const value = e.target.value;
                         setNewTask({
                             ...newTask,
-                            pointsPerUnit: Number(e.target.value),
-                        })
-                    }
+                            pointsPerUnit:
+                                value === "" ? undefined : Number(value),
+                        });
+                    }}
                     disabled={upsert.isPending}
                 />
                 <Input

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { TaskRow } from "@/components/tasks/task-row";
 import { DEFAULT_CUTOFF_HOUR } from "@/lib/settings";
+import type { Task } from "@/lib/tasks";
 
 export function TaskList() {
     const utils = api.useUtils();
@@ -37,6 +38,19 @@ export function TaskList() {
 
     const handleDelete = async (taskId: string) => {
         const tasks = set.tasks.filter((task) => task.id !== taskId);
+        await upsert.mutateAsync({
+            taskSet: {
+                tasks,
+                layout: set.layout,
+            },
+            date: today,
+        });
+    };
+
+    const handleEdit = async (taskId: string, updatedTask: Task) => {
+        const tasks = set.tasks.map((task) =>
+            task.id === taskId ? updatedTask : task,
+        );
         await upsert.mutateAsync({
             taskSet: {
                 tasks,
@@ -80,6 +94,9 @@ export function TaskList() {
                                 key={task.id}
                                 task={task}
                                 onDelete={() => handleDelete(task.id)}
+                                onEdit={(updatedTask) =>
+                                    handleEdit(task.id, updatedTask)
+                                }
                                 disabled={upsert.isPending}
                             />
                         ))}
