@@ -117,12 +117,15 @@ function calculateWeeklyInsight(
     weekStart: Date,
     taskSets: TaskSetEntry[],
     dailyLogs: DailyLogEntry[],
+    maxDate: Date,
 ) {
     let pointsEarned = 0;
     let totalPossiblePoints = 0;
 
     for (let i = 0; i < 7; i++) {
         const dayId = addDaysUtc(weekStart, i);
+        if (dayId.getTime() > maxDate.getTime()) continue;
+
         const daily = calculateDailyInsight(dayId, taskSets, dailyLogs);
         pointsEarned += daily.pointsEarned;
         totalPossiblePoints += daily.totalPossiblePoints;
@@ -185,6 +188,7 @@ export function calculateInsights(
                 currentWeekStart,
                 taskSets,
                 dailyLogs,
+                endDayId,
             );
             results.push({
                 bucket: currentWeekStart.toISOString(),
