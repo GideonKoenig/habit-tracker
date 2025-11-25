@@ -8,8 +8,8 @@ import { tryCatch } from "@/lib/try-catch";
 
 const NAV_ITEMS = [
     { href: "/", label: "Tracking" },
-    { href: "/tasks", label: "Tasks" },
     { href: "/insights", label: "Insights" },
+    { href: "/tasks", label: "Tasks" },
     { href: "/settings", label: "Settings" },
 ] as const;
 
