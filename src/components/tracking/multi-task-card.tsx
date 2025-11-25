@@ -139,14 +139,14 @@ export function MultiTaskCard(props: {
                 {target > 0 ? `${props.value} / ${target}` : props.value}
             </span>
 
-            <div className="flex min-w-[100px] flex-1 flex-wrap gap-2 self-stretch">
+            <div className="flex min-w-24 flex-1 flex-wrap gap-2 self-stretch">
                 <button
                     type="button"
                     aria-label="Decrease count"
                     disabled={isDisabled}
                     onClick={handleDecrement}
                     className={cn(
-                        "flex min-w-[80px] flex-1 items-center justify-center rounded-xl border-2 px-5 text-3xl leading-none font-semibold",
+                        "flex min-w-20 flex-1 items-center justify-center rounded-xl border-2 px-5 text-3xl leading-none font-semibold",
                         goalReached &&
                             "border-accent-pink/30 bg-accent-pink/10 text-text/50",
                         isDisabled &&
@@ -167,7 +167,7 @@ export function MultiTaskCard(props: {
                     disabled={isDisabled}
                     onClick={handleIncrement}
                     className={cn(
-                        "flex min-w-[80px] flex-1 items-center justify-center rounded-xl border-2 px-5 text-3xl leading-none font-semibold",
+                        "flex min-w-20 flex-1 items-center justify-center rounded-xl border-2 px-5 text-3xl leading-none font-semibold",
                         goalReached &&
                             "border-accent-pink/30 bg-accent-pink/10 text-text/50",
                         isDisabled &&
