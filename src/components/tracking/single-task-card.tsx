@@ -71,14 +71,6 @@ export function SingleTaskCard(props: {
     const completed = props.value === 1;
     const isDisabled = props.editLayout || !scheduledToday;
 
-    const statusText = props.editLayout
-        ? "Locked"
-        : !scheduledToday
-          ? "Not scheduled"
-          : completed
-            ? "Completed"
-            : "Tap to complete";
-
     const handleToggle = () => {
         const nextValue = props.value === 1 ? 0 : 1;
         const nextLog = {
@@ -92,21 +84,24 @@ export function SingleTaskCard(props: {
     };
 
     const cardClasses = cn(
-        "h-full w-full rounded-2xl border-2 px-6 py-5 flex items-center justify-center",
-        completed && "border-border bg-bg-elevated",
-        !completed && "border-accent-pink/70 bg-accent-pink/25",
-        isDisabled && "cursor-default opacity-60",
+        "h-full w-full rounded-2xl border-2 px-6 flex items-center justify-center py-1",
+        completed && "border-accent-pink/30 bg-accent-pink/10",
+        isDisabled && !completed && "border-border/30 bg-bg-elevated/30",
+        !completed && !isDisabled && "border-accent-pink/70 bg-accent-pink/25",
+        isDisabled && "cursor-default",
         !isDisabled &&
             "cursor-pointer hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         props.editLayout && "rounded-br-none",
     );
 
     const content = (
-        <div className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3">
+        <div className="flex h-full w-full items-center justify-between gap-x-3">
             <span
                 className={cn(
                     "text-left text-lg font-semibold tracking-tight",
-                    completed ? "text-text-muted" : "text-text",
+                    completed && "text-text/50",
+                    isDisabled && !completed && "text-text-muted/50",
+                    !completed && !isDisabled && "text-text",
                 )}
             >
                 {props.task.label}
@@ -115,24 +110,22 @@ export function SingleTaskCard(props: {
             <span
                 aria-hidden
                 className={cn(
-                    "row-span-2 flex size-12 items-center justify-center rounded-full border-2 text-2xl font-semibold",
-                    completed
-                        ? "border-accent-pink/60 bg-accent-pink/25 text-text"
-                        : "border-accent-pink/90 bg-accent-pink/90 text-text",
+                    "flex aspect-square h-full max-h-12 shrink items-center justify-center rounded-full border-2 text-2xl font-semibold",
+                    completed &&
+                        "border-accent-pink/30 bg-accent-pink/10 text-text/50",
+                    isDisabled &&
+                        !completed &&
+                        "bg-bg-elevated/20 text-text-muted/50 border-transparent",
+                    !completed &&
+                        !isDisabled &&
+                        "border-accent-pink/90 bg-accent-pink/90 text-text",
                 )}
             >
-                {completed ? "✓" : ""}
-            </span>
-
-            <span
-                className={cn(
-                    "text-left text-xs tracking-widest uppercase",
-                    completed || isDisabled
-                        ? "text-text-muted"
-                        : "text-text/75",
-                )}
-            >
-                {statusText}
+                {completed
+                    ? "✓"
+                    : !scheduledToday && !props.editLayout
+                      ? "—"
+                      : ""}
             </span>
         </div>
     );
