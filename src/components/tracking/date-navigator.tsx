@@ -1,5 +1,9 @@
 "use client";
-import { formatGermanDate, formatDateDistance } from "@/lib/time";
+import {
+    formatGermanDate,
+    formatDateDistance,
+    getWeekdayFull,
+} from "@/lib/time";
 import { type Layout } from "react-grid-layout";
 
 export function DateNavigator(props: {
@@ -58,9 +62,7 @@ export function DateNavigator(props: {
             <div className="mx-auto grid w-full max-w-5xl grid-cols-3 items-center gap-6 px-6 py-3">
                 <div className="flex w-full items-center justify-start gap-3">
                     <div className="text-text text-lg font-semibold">
-                        {props.currentDate.toLocaleDateString("en-US", {
-                            weekday: "long",
-                        })}
+                        {getWeekdayFull(props.currentDate)}
                     </div>
                     <span className="bg-accent-pink/20 text-accent-pink inline-flex h-8 min-w-28 items-center justify-center rounded-full px-3 text-xs font-semibold">
                         {formatDateDistance(props.currentDate, props.today)}

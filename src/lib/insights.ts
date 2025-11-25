@@ -1,6 +1,6 @@
 import type { Task, TaskSetEntry } from "@/lib/tasks";
 import type { DailyLogEntry } from "@/lib/daily-logs";
-import { addDaysUtc } from "@/lib/time";
+import { addDaysUtc, getWeekdayIndex } from "@/lib/time";
 
 type InsightRange = "7d" | "30d" | "365d";
 type InsightResolution = "daily" | "weekly";
@@ -19,11 +19,6 @@ export type InsightDataPoint = {
     percentage: number;
 };
 
-function getWeekday(date: Date) {
-    const day = date.getUTCDay();
-    return day === 0 ? 6 : day - 1;
-}
-
 function isTaskActiveForDay(
     task: Task,
     dayId: Date,
@@ -37,8 +32,8 @@ function isTaskActiveForDay(
     if (dayTime < fromTime) return false;
     if (toTime !== undefined && dayTime > toTime) return false;
 
-    const weekday = getWeekday(dayId);
-    return task.activeWeekdays[weekday] ?? false;
+    const weekdayIndex = getWeekdayIndex(dayId);
+    return task.activeWeekdays[weekdayIndex] ?? false;
 }
 
 function calculateTaskPoints(task: Task, value: number) {
@@ -114,8 +109,8 @@ function calculateDailyInsight(
 }
 
 function getWeekStart(date: Date) {
-    const weekday = getWeekday(date);
-    return addDaysUtc(date, -weekday);
+    const weekdayIndex = getWeekdayIndex(date);
+    return addDaysUtc(date, -weekdayIndex);
 }
 
 function calculateWeeklyInsight(

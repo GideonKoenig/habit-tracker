@@ -2,6 +2,7 @@
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
 import type { Task } from "@/lib/tasks";
+import { getWeekdayIndex } from "@/lib/time";
 
 export function SingleTaskCard(props: {
     task: Task;
@@ -66,7 +67,7 @@ export function SingleTaskCard(props: {
         },
     });
 
-    const weekday = (props.currentDate.getUTCDay() + 6) % 7;
+    const weekday = getWeekdayIndex(props.currentDate);
     const scheduledToday = props.task.activeWeekdays[weekday];
     const completed = props.value === 1;
     const isDisabled = props.editLayout || !scheduledToday;

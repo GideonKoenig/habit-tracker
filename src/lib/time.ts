@@ -8,6 +8,29 @@ export const WEEKDAY_LABELS: string[] = [
     "Sun",
 ];
 
+export const WEEKDAY_LABELS_FULL: string[] = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+];
+
+export function getWeekdayIndex(date: Date) {
+    const day = date.getUTCDay();
+    return day === 0 ? 6 : day - 1;
+}
+
+export function getWeekday(date: Date) {
+    return WEEKDAY_LABELS[getWeekdayIndex(date)];
+}
+
+export function getWeekdayFull(date: Date) {
+    return WEEKDAY_LABELS_FULL[getWeekdayIndex(date)];
+}
+
 export function formatGermanDate(date: Date) {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
