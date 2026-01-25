@@ -30,8 +30,6 @@ export default function RootLayout(
             <head>
                 <PlausibleProvider
                     domain={new URL(env.NEXT_PUBLIC_APP_URL).hostname}
-                    customDomain={env.NEXT_PUBLIC_PLAUSIBLE_HOST}
-                    selfHosted
                 />
             </head>
             <body className="bg-bg relative h-dvh w-dvw">

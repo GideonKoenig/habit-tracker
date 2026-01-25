@@ -1,4 +1,5 @@
-import "./src/env.js";
+import { env } from "./src/env.js";
+import { withPlausibleProxy } from "next-plausible";
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -7,4 +8,6 @@ const config = {
     },
 };
 
-export default config;
+export default withPlausibleProxy({
+    customDomain: env.NEXT_PUBLIC_PLAUSIBLE_HOST,
+})(config);
