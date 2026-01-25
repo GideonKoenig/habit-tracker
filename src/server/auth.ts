@@ -5,6 +5,7 @@ import { env } from "@/env";
 import { headers } from "next/headers";
 
 export const auth = betterAuth({
+    baseURL: env.NEXT_PUBLIC_APP_URL,
     database: drizzleAdapter(db, {
         provider: "pg",
     }),
