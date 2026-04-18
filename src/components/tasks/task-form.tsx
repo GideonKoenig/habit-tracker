@@ -3,23 +3,14 @@ import { useState } from "react";
 import { api } from "@/trpc/react";
 import type { Task, TaskSet } from "@/lib/tasks";
 import { taskSchema, DEFAULT_TASK_LAYOUT } from "@/lib/tasks";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { TaskTypeSelector } from "@/components/tasks/task-type-selector";
 import { WeekdaySelector } from "@/components/tasks/weekday-selector";
 
-export function TaskForm(props: {
-    currentSet: TaskSet | null | undefined;
-    today: Date;
-}) {
+export function TaskForm(props: { currentSet: TaskSet | null | undefined; today: Date }) {
     const utils = api.useUtils();
     const [newTask, setNewTask] = useState<Partial<Task>>({
         id: crypto.randomUUID(),
@@ -72,9 +63,7 @@ export function TaskForm(props: {
                 <Input
                     placeholder="Name"
                     value={newTask.label ?? ""}
-                    onChange={(event) =>
-                        setNewTask({ ...newTask, label: event.target.value })
-                    }
+                    onChange={(event) => setNewTask({ ...newTask, label: event.target.value })}
                     disabled={upsert.isPending}
                 />
                 <TaskTypeSelector
@@ -91,8 +80,7 @@ export function TaskForm(props: {
                         const value = e.target.value;
                         setNewTask({
                             ...newTask,
-                            pointsPerUnit:
-                                value === "" ? undefined : Number(value),
+                            pointsPerUnit: value === "" ? undefined : Number(value),
                         });
                     }}
                     disabled={upsert.isPending}
@@ -101,18 +89,11 @@ export function TaskForm(props: {
                     type="number"
                     placeholder="Target"
                     className="w-full [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    value={
-                        newTask.type === "multi"
-                            ? (newTask.targetPerDay ?? "")
-                            : ""
-                    }
+                    value={newTask.type === "multi" ? (newTask.targetPerDay ?? "") : ""}
                     onChange={(e) =>
                         setNewTask({
                             ...newTask,
-                            targetPerDay:
-                                e.target.value === ""
-                                    ? undefined
-                                    : Number(e.target.value),
+                            targetPerDay: e.target.value === "" ? undefined : Number(e.target.value),
                         })
                     }
                     disabled={newTask.type !== "multi" || upsert.isPending}
@@ -120,9 +101,7 @@ export function TaskForm(props: {
                 <div className="md:col-span-3">
                     <WeekdaySelector
                         weekdays={newTask.activeWeekdays!}
-                        onChange={(weekdays) =>
-                            setNewTask({ ...newTask, activeWeekdays: weekdays })
-                        }
+                        onChange={(weekdays) => setNewTask({ ...newTask, activeWeekdays: weekdays })}
                         disabled={upsert.isPending}
                     />
                 </div>

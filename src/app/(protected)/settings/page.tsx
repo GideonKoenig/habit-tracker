@@ -1,13 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { api } from "@/trpc/react";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -18,11 +12,7 @@ export default function SettingsPage() {
     const update = api.settings.updateCutoffHour.useMutation();
 
     if (isLoading) {
-        return (
-            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
-                Loading…
-            </div>
-        );
+        return <div className="text-text-muted flex items-center justify-center py-20 text-sm">Loading…</div>;
     }
 
     const handleSave = async () => {
@@ -56,13 +46,10 @@ export default function SettingsPage() {
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <span className="text-text-muted text-xs font-medium tracking-wider uppercase">
-                                About
-                            </span>
+                            <span className="text-text-muted text-xs font-medium tracking-wider uppercase">About</span>
                             <p className="text-text-muted text-sm">
-                                The time when your day resets. Activities after
-                                midnight count toward the previous day until
-                                this hour.
+                                The time when your day resets. Activities after midnight count toward the previous day
+                                until this hour.
                             </p>
                         </div>
                     </div>

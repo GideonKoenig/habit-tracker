@@ -14,12 +14,9 @@ export default function Home() {
     const utils = api.useUtils();
     const [offsetDays, setOffsetDays] = useState<number>(0);
     const [draftLayout, setDraftLayout] = useState<Layout[] | null>(null);
-    const { data: settings, isLoading: isLoadingSettings } =
-        api.settings.getSettings.useQuery();
-    const { data: allTaskSets, isLoading: isLoadingTaskSets } =
-        api.taskSet.getForUser.useQuery();
-    const { data: allLogs, isLoading: isLoadingLogs } =
-        api.dailyLog.getForUser.useQuery();
+    const { data: settings, isLoading: isLoadingSettings } = api.settings.getSettings.useQuery();
+    const { data: allTaskSets, isLoading: isLoadingTaskSets } = api.taskSet.getForUser.useQuery();
+    const { data: allLogs, isLoading: isLoadingLogs } = api.dailyLog.getForUser.useQuery();
 
     const updateLayoutForToday = api.taskSet.updateLayoutForDate.useMutation({
         onMutate: async (variables) => {
@@ -32,38 +29,22 @@ export default function Home() {
             if (!previousTaskSets) {
                 return { previousTaskSets, previousForDate };
             }
-            const activeForDate = findActiveTaskSetForDate(
-                previousTaskSets,
-                variables.date,
-            );
+            const activeForDate = findActiveTaskSetForDate(previousTaskSets, variables.date);
             if (!activeForDate) {
                 return { previousTaskSets, previousForDate };
             }
             const nextTaskSets = previousTaskSets.map((entry) =>
-                entry.id === activeForDate.id
-                    ? { ...entry, layout: variables.layout }
-                    : entry,
+                entry.id === activeForDate.id ? { ...entry, layout: variables.layout } : entry,
             );
-            const updatedActive = nextTaskSets.find(
-                (entry) => entry.id === activeForDate.id,
-            )!;
+            const updatedActive = nextTaskSets.find((entry) => entry.id === activeForDate.id)!;
             utils.taskSet.getForUser.setData(undefined, nextTaskSets);
-            utils.taskSet.getForDate.setData(
-                { date: variables.date },
-                updatedActive,
-            );
+            utils.taskSet.getForDate.setData({ date: variables.date }, updatedActive);
             return { previousTaskSets, previousForDate };
         },
         onError: (_error, variables, context) => {
             if (!context) return;
-            utils.taskSet.getForUser.setData(
-                undefined,
-                context.previousTaskSets,
-            );
-            utils.taskSet.getForDate.setData(
-                { date: variables.date },
-                context.previousForDate,
-            );
+            utils.taskSet.getForUser.setData(undefined, context.previousTaskSets);
+            utils.taskSet.getForDate.setData({ date: variables.date }, context.previousForDate);
         },
         onSettled: async (_result, _error, variables) => {
             await utils.taskSet.getForUser.invalidate();
@@ -72,18 +53,12 @@ export default function Home() {
     });
 
     if (isLoadingSettings || isLoadingTaskSets || isLoadingLogs) {
-        return (
-            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
-                Loading…
-            </div>
-        );
+        return <div className="text-text-muted flex items-center justify-center py-20 text-sm">Loading…</div>;
     }
 
     if (!settings || !allTaskSets || !allLogs) {
         return (
-            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
-                Failed to load data.
-            </div>
+            <div className="text-text-muted flex items-center justify-center py-20 text-sm">Failed to load data.</div>
         );
     }
 
@@ -105,14 +80,11 @@ export default function Home() {
                 <DateNavigator
                     currentDate={currentDate}
                     today={today}
-                    onOffsetChange={(offset) =>
-                        setOffsetDays((v) => v + offset)
-                    }
+                    onOffsetChange={(offset) => setOffsetDays((v) => v + offset)}
                 />
                 <Card>
                     <CardContent className="text-text-muted px-6 py-10 text-center text-sm">
-                        No active task set for this day. Visit Tasks to craft
-                        your flow.
+                        No active task set for this day. Visit Tasks to craft your flow.
                     </CardContent>
                 </Card>
             </div>

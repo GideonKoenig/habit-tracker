@@ -1,9 +1,5 @@
 "use client";
-import {
-    formatGermanDate,
-    formatDateDistance,
-    getWeekdayFull,
-} from "@/lib/time";
+import { formatGermanDate, formatDateDistance, getWeekdayFull } from "@/lib/time";
 import { type Layout } from "react-grid-layout";
 
 export function DateNavigator(props: {
@@ -24,9 +20,7 @@ export function DateNavigator(props: {
 
     const handleToggleLayoutMode = () => {
         if (props.setDraftLayout && props.activeLayout) {
-            props.setDraftLayout(
-                props.draftLayout === null ? props.activeLayout : null,
-            );
+            props.setDraftLayout(props.draftLayout === null ? props.activeLayout : null);
         }
     };
 
@@ -44,10 +38,7 @@ export function DateNavigator(props: {
         }
     };
 
-    const todayOffset = Math.round(
-        (props.today.getTime() - props.currentDate.getTime()) /
-            (1000 * 60 * 60 * 24),
-    );
+    const todayOffset = Math.round((props.today.getTime() - props.currentDate.getTime()) / (1000 * 60 * 60 * 24));
 
     const navigationButtons = [
         { offset: -7, label: "−7" },
@@ -61,9 +52,7 @@ export function DateNavigator(props: {
         <div className="border-border bg-bg-elevated/60 sticky top-16 z-30 rounded-lg border backdrop-blur-sm">
             <div className="mx-auto grid w-full max-w-5xl grid-cols-3 items-center gap-6 px-6 py-3">
                 <div className="flex w-full items-center justify-start gap-3">
-                    <div className="text-text text-lg font-semibold">
-                        {getWeekdayFull(props.currentDate)}
-                    </div>
+                    <div className="text-text text-lg font-semibold">{getWeekdayFull(props.currentDate)}</div>
                     <span className="bg-accent-pink/20 text-accent-pink inline-flex h-8 min-w-28 items-center justify-center rounded-full px-3 text-xs font-semibold">
                         {formatDateDistance(props.currentDate, props.today)}
                     </span>

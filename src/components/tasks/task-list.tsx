@@ -1,13 +1,7 @@
 "use client";
 import { api } from "@/trpc/react";
 import { resolveLogicalDay, formatGermanDate } from "@/lib/time";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskRow } from "@/components/tasks/task-row";
 import { DEFAULT_CUTOFF_HOUR } from "@/lib/settings";
 import type { Task } from "@/lib/tasks";
@@ -48,9 +42,7 @@ export function TaskList() {
     };
 
     const handleEdit = async (taskId: string, updatedTask: Task) => {
-        const tasks = set.tasks.map((task) =>
-            task.id === taskId ? updatedTask : task,
-        );
+        const tasks = set.tasks.map((task) => (task.id === taskId ? updatedTask : task));
         await upsert.mutateAsync({
             taskSet: {
                 tasks,
@@ -77,15 +69,9 @@ export function TaskList() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-[1.4fr_0.9fr_0.7fr_auto] items-center gap-x-4 gap-y-3">
-                        <span className="text-text-muted text-[10px] tracking-[0.2em] uppercase">
-                            Name
-                        </span>
-                        <span className="text-text-muted text-[10px] tracking-[0.2em] uppercase">
-                            Type
-                        </span>
-                        <span className="text-text-muted text-[10px] tracking-[0.2em] uppercase">
-                            Points
-                        </span>
+                        <span className="text-text-muted text-[10px] tracking-[0.2em] uppercase">Name</span>
+                        <span className="text-text-muted text-[10px] tracking-[0.2em] uppercase">Type</span>
+                        <span className="text-text-muted text-[10px] tracking-[0.2em] uppercase">Points</span>
                         <span className="text-text-muted text-right text-[10px] tracking-[0.2em] uppercase">
                             Actions
                         </span>
@@ -94,9 +80,7 @@ export function TaskList() {
                                 key={task.id}
                                 task={task}
                                 onDelete={() => handleDelete(task.id)}
-                                onEdit={(updatedTask) =>
-                                    handleEdit(task.id, updatedTask)
-                                }
+                                onEdit={(updatedTask) => handleEdit(task.id, updatedTask)}
                                 disabled={upsert.isPending}
                             />
                         ))}

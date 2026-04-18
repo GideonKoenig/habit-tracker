@@ -50,24 +50,16 @@ export function prepareLayout(tasks: Task[], savedPanels: TaskLayoutPanel[]) {
         });
     }
 
-    const tasksWithoutLayout = tasks.filter(
-        (task) => !savedLayouts.has(task.id),
-    );
+    const tasksWithoutLayout = tasks.filter((task) => !savedLayouts.has(task.id));
 
     let startRow = 0;
     if (savedLayouts.size > 0) {
-        const maxBottom = Math.max(
-            ...Array.from(savedLayouts.values()).map(
-                (layout) => layout.y + layout.h,
-            ),
-        );
+        const maxBottom = Math.max(...Array.from(savedLayouts.values()).map((layout) => layout.y + layout.h));
         startRow = maxBottom;
     }
 
     const newLayouts = generateDefaultLayout(tasksWithoutLayout, startRow);
-    const newLayoutsMap = new Map(
-        newLayouts.map((layout) => [layout.i, layout]),
-    );
+    const newLayoutsMap = new Map(newLayouts.map((layout) => [layout.i, layout]));
 
     return tasks.map((task): Layout => {
         const saved = savedLayouts.get(task.id);

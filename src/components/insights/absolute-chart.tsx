@@ -1,18 +1,5 @@
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer,
-} from "recharts";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatGermanDate, formatGermanDateShort } from "@/lib/time";
 import type { InsightDataPoint } from "@/lib/insights";
 import { InsightsTooltip } from "@/components/insights/insights-tooltip";
@@ -28,33 +15,21 @@ function roundToNiceNumber(value: number) {
     return nice * magnitude;
 }
 
-export function AbsoluteChart(props: {
-    data: InsightDataPoint[];
-    endDayId: Date;
-}) {
+export function AbsoluteChart(props: { data: InsightDataPoint[]; endDayId: Date }) {
     const chartData = props.data.map((point) => ({
         ...point,
-        pointsUnearned: Math.max(
-            0,
-            point.totalPossiblePoints - point.pointsEarned,
-        ),
+        pointsUnearned: Math.max(0, point.totalPossiblePoints - point.pointsEarned),
     }));
 
-    const maxTotalPoints =
-        chartData.length > 0
-            ? Math.max(...chartData.map((d) => d.totalPossiblePoints))
-            : 0;
+    const maxTotalPoints = chartData.length > 0 ? Math.max(...chartData.map((d) => d.totalPossiblePoints)) : 0;
 
-    const roundedMax =
-        maxTotalPoints > 0 ? roundToNiceNumber(maxTotalPoints) : 100;
+    const roundedMax = maxTotalPoints > 0 ? roundToNiceNumber(maxTotalPoints) : 100;
 
     return (
         <Card className="overflow-hidden">
             <CardHeader className="flex flex-col gap-1">
                 <CardTitle>Trend</CardTitle>
-                <CardDescription>
-                    Absolute · End {formatGermanDate(props.endDayId)}
-                </CardDescription>
+                <CardDescription>Absolute · End {formatGermanDate(props.endDayId)}</CardDescription>
             </CardHeader>
             <CardContent className="h-96 px-3 py-3">
                 <ResponsiveContainer width="100%" height="100%">
@@ -78,9 +53,7 @@ export function AbsoluteChart(props: {
                                 fontSize: 11,
                                 fill: "oklch(68% 0.01 270)",
                             }}
-                            tickFormatter={(value: string) =>
-                                formatGermanDateShort(new Date(value))
-                            }
+                            tickFormatter={(value: string) => formatGermanDateShort(new Date(value))}
                         />
                         <YAxis
                             domain={[0, roundedMax]}
@@ -98,12 +71,7 @@ export function AbsoluteChart(props: {
                         />
                         <Tooltip
                             cursor={{ fill: "transparent" }}
-                            content={(tooltipProps) => (
-                                <InsightsTooltip
-                                    {...tooltipProps}
-                                    mode="absolute"
-                                />
-                            )}
+                            content={(tooltipProps) => <InsightsTooltip {...tooltipProps} mode="absolute" />}
                         />
                         <Bar
                             dataKey="pointsEarned"

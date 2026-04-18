@@ -41,16 +41,14 @@ export type TaskSetEntry = RouterOutputs["taskSet"]["getForUser"][number];
 
 export const DEFAULT_TASK_LAYOUT: TaskLayout = { panels: [] };
 
-export function findActiveTaskSetForDate<
-    T extends { activeFrom: Date; activeTo: Date | null },
->(taskSets: T[], date: Date) {
+export function findActiveTaskSetForDate<T extends { activeFrom: Date; activeTo: Date | null }>(
+    taskSets: T[],
+    date: Date,
+) {
     return taskSets.find((taskSet) => {
         const fromTime = taskSet.activeFrom.getTime();
         const toTime = taskSet.activeTo?.getTime();
         const targetTime = date.getTime();
-        return (
-            targetTime >= fromTime &&
-            (toTime === undefined || targetTime <= toTime)
-        );
+        return targetTime >= fromTime && (toTime === undefined || targetTime <= toTime);
     });
 }

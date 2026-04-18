@@ -54,12 +54,7 @@ export default function AppHeader() {
                     className="focus-visible:ring-accent-pink focus-visible:ring-offset-bg cursor-pointer rounded-full hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                     <Avatar className="border-border bg-bg-elevated h-9 w-9 border">
-                        {user?.image && (
-                            <AvatarImage
-                                src={user.image}
-                                alt={user.name ?? "Avatar"}
-                            />
-                        )}
+                        {user?.image && <AvatarImage src={user.image} alt={user.name ?? "Avatar"} />}
                         <AvatarFallback className="text-text text-xs font-semibold uppercase">
                             {initials}
                         </AvatarFallback>

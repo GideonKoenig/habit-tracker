@@ -1,23 +1,12 @@
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { GraphSettings } from "@/lib/insights";
 
-export function InsightsFilters(props: {
-    settings: GraphSettings;
-    setSettings: (settings: GraphSettings) => void;
-}) {
+export function InsightsFilters(props: { settings: GraphSettings; setSettings: (settings: GraphSettings) => void }) {
     return (
         <div className="border-border bg-bg-elevated/60 rounded-lg border backdrop-blur-sm">
             <div className="flex flex-wrap items-center gap-4 px-6 py-4">
                 <div className="flex items-center gap-2">
-                    <span className="text-text-muted text-xs uppercase">
-                        Range
-                    </span>
+                    <span className="text-text-muted text-xs uppercase">Range</span>
                     <Select
                         value={props.settings.range}
                         onValueChange={(v) =>
@@ -38,9 +27,7 @@ export function InsightsFilters(props: {
                     </Select>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-text-muted text-xs uppercase">
-                        Resolution
-                    </span>
+                    <span className="text-text-muted text-xs uppercase">Resolution</span>
                     <Select
                         value={props.settings.resolution}
                         onValueChange={(v) =>
@@ -60,9 +47,7 @@ export function InsightsFilters(props: {
                     </Select>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-text-muted text-xs uppercase">
-                        Mode
-                    </span>
+                    <span className="text-text-muted text-xs uppercase">Mode</span>
                     <Select
                         value={props.settings.mode}
                         onValueChange={(v) =>

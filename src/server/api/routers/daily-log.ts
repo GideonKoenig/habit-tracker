@@ -7,31 +7,21 @@ import { dailyLogSchema } from "@/lib/daily-logs";
 export const dailyLogRouter = createTRPCRouter({
     getForUser: protectedProcedure.query(async ({ ctx }) => {
         const userId = ctx.session.user.id;
-        const rows = await ctx.db
-            .select()
-            .from(dailyLog)
-            .where(eq(dailyLog.userId, userId));
+        const rows = await ctx.db.select().from(dailyLog).where(eq(dailyLog.userId, userId));
         return rows;
     }),
 
-    getForDate: protectedProcedure
-        .input(z.object({ date: z.date() }))
-        .query(async ({ ctx, input }) => {
-            const userId = ctx.session.user.id;
-            const row = await ctx.db
-                .select()
-                .from(dailyLog)
-                .where(
-                    and(
-                        eq(dailyLog.userId, userId),
-                        eq(dailyLog.date, input.date),
-                    ),
-                )
-                .limit(1);
-            const entry = row[0];
-            if (!entry) return null;
-            return entry;
-        }),
+    getForDate: protectedProcedure.input(z.object({ date: z.date() })).query(async ({ ctx, input }) => {
+        const userId = ctx.session.user.id;
+        const row = await ctx.db
+            .select()
+            .from(dailyLog)
+            .where(and(eq(dailyLog.userId, userId), eq(dailyLog.date, input.date)))
+            .limit(1);
+        const entry = row[0];
+        if (!entry) return null;
+        return entry;
+    }),
 
     upsertForDate: protectedProcedure
         .input(z.object({ date: z.date(), data: dailyLogSchema }))

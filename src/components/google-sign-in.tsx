@@ -22,13 +22,7 @@ export default function GoogleSignIn() {
     };
 
     return (
-        <Button
-            className="w-full gap-3 text-sm"
-            onClick={handleSignIn}
-            variant="outline"
-            size="lg"
-            disabled={loading}
-        >
+        <Button className="w-full gap-3 text-sm" onClick={handleSignIn} variant="outline" size="lg" disabled={loading}>
             {loading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
             {loading ? "Signing in..." : "Sign in with Google"}
         </Button>

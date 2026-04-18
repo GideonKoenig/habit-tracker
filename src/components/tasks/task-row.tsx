@@ -30,32 +30,16 @@ export function TaskRow(props: {
 
     return (
         <div className="contents">
-            <span className="text-text text-sm font-medium">
-                {props.task.label}
-            </span>
+            <span className="text-text text-sm font-medium">{props.task.label}</span>
             <span className="text-text text-xs uppercase">
-                {props.task.type === "single"
-                    ? "Single"
-                    : `Multi (${props.task.targetPerDay ?? 0})`}
+                {props.task.type === "single" ? "Single" : `Multi (${props.task.targetPerDay ?? 0})`}
             </span>
-            <span className="text-text text-sm">
-                {props.task.pointsPerUnit ?? 1}
-            </span>
+            <span className="text-text text-sm">{props.task.pointsPerUnit ?? 1}</span>
             <div className="flex justify-end gap-1">
-                <Button
-                    size="icon"
-                    variant="outline"
-                    disabled={props.disabled}
-                    onClick={() => setIsEditing(true)}
-                >
+                <Button size="icon" variant="outline" disabled={props.disabled} onClick={() => setIsEditing(true)}>
                     <Pencil className="size-4" />
                 </Button>
-                <Button
-                    size="icon"
-                    variant="outline"
-                    disabled={props.disabled}
-                    onClick={props.onDelete}
-                >
+                <Button size="icon" variant="outline" disabled={props.disabled} onClick={props.onDelete}>
                     <Trash2 className="size-4" />
                 </Button>
             </div>

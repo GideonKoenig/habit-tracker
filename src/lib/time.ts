@@ -1,12 +1,4 @@
-export const WEEKDAY_LABELS: string[] = [
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun",
-];
+export const WEEKDAY_LABELS: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export const WEEKDAY_LABELS_FULL: string[] = [
     "Monday",
@@ -56,9 +48,7 @@ export function resolveLogicalDay(now: Date, cutoffHour: number) {
 }
 
 export function addDaysUtc(date: Date, offset: number) {
-    const base = new Date(
-        Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
-    );
+    const base = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
     base.setUTCDate(base.getUTCDate() + offset);
     return base;
 }
@@ -102,11 +92,6 @@ export function formatDateDistance(date: Date, today: Date): string {
     }
 
     const weekPart = `${weeks} ${weeks === 1 ? "week" : "weeks"}`;
-    const dayPart =
-        remainingDays > 0
-            ? ` ${remainingDays} ${remainingDays === 1 ? "day" : "days"}`
-            : "";
-    return diffDays < 0
-        ? `${weekPart}${dayPart} ago`
-        : `in ${weekPart}${dayPart}`;
+    const dayPart = remainingDays > 0 ? ` ${remainingDays} ${remainingDays === 1 ? "day" : "days"}` : "";
+    return diffDays < 0 ? `${weekPart}${dayPart} ago` : `in ${weekPart}${dayPart}`;
 }

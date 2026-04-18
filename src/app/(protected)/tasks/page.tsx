@@ -6,17 +6,11 @@ import { TaskList } from "@/components/tasks/task-list";
 import { DEFAULT_CUTOFF_HOUR } from "@/lib/settings";
 
 export default function TasksPage() {
-    const { data: settings, isLoading: isLoadingSettings } =
-        api.settings.getSettings.useQuery();
-    const { data: set, isLoading: isLoadingSet } =
-        api.taskSet.getLatestForUser.useQuery();
+    const { data: settings, isLoading: isLoadingSettings } = api.settings.getSettings.useQuery();
+    const { data: set, isLoading: isLoadingSet } = api.taskSet.getLatestForUser.useQuery();
 
     if (isLoadingSettings || isLoadingSet) {
-        return (
-            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
-                Loading…
-            </div>
-        );
+        return <div className="text-text-muted flex items-center justify-center py-20 text-sm">Loading…</div>;
     }
 
     if (!settings) {

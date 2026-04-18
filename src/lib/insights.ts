@@ -19,12 +19,7 @@ export type InsightDataPoint = {
     percentage: number;
 };
 
-function isTaskActiveForDay(
-    task: Task,
-    dayId: Date,
-    taskSetActiveFrom: Date,
-    taskSetActiveTo: Date | null,
-) {
+function isTaskActiveForDay(task: Task, dayId: Date, taskSetActiveFrom: Date, taskSetActiveTo: Date | null) {
     const dayTime = dayId.getTime();
     const fromTime = taskSetActiveFrom.getTime();
     const toTime = taskSetActiveTo?.getTime();
@@ -55,14 +50,7 @@ function getTasksForDay(dayId: Date, taskSets: TaskSetEntry[]) {
 
     for (const taskSet of taskSets) {
         for (const task of taskSet.tasks) {
-            if (
-                isTaskActiveForDay(
-                    task,
-                    dayId,
-                    taskSet.activeFrom,
-                    taskSet.activeTo,
-                )
-            ) {
+            if (isTaskActiveForDay(task, dayId, taskSet.activeFrom, taskSet.activeTo)) {
                 result.push({ task, taskSet });
             }
         }
@@ -71,11 +59,7 @@ function getTasksForDay(dayId: Date, taskSets: TaskSetEntry[]) {
     return result;
 }
 
-function calculateDailyInsight(
-    dayId: Date,
-    taskSets: TaskSetEntry[],
-    dailyLogs: DailyLogEntry[],
-) {
+function calculateDailyInsight(dayId: Date, taskSets: TaskSetEntry[], dailyLogs: DailyLogEntry[]) {
     const logEntry = dailyLogs.find((log) => {
         const logTime = log.date.getTime();
         const targetTime = dayId.getTime();
@@ -95,10 +79,7 @@ function calculateDailyInsight(
         totalPossiblePoints += possible;
     }
 
-    const percentage =
-        totalPossiblePoints > 0
-            ? (pointsEarned / totalPossiblePoints) * 100
-            : 0;
+    const percentage = totalPossiblePoints > 0 ? (pointsEarned / totalPossiblePoints) * 100 : 0;
 
     return {
         date: dayId,
@@ -113,12 +94,7 @@ function getWeekStart(date: Date) {
     return addDaysUtc(date, -weekdayIndex);
 }
 
-function calculateWeeklyInsight(
-    weekStart: Date,
-    taskSets: TaskSetEntry[],
-    dailyLogs: DailyLogEntry[],
-    maxDate: Date,
-) {
+function calculateWeeklyInsight(weekStart: Date, taskSets: TaskSetEntry[], dailyLogs: DailyLogEntry[], maxDate: Date) {
     let pointsEarned = 0;
     let totalPossiblePoints = 0;
 
@@ -131,10 +107,7 @@ function calculateWeeklyInsight(
         totalPossiblePoints += daily.totalPossiblePoints;
     }
 
-    const percentage =
-        totalPossiblePoints > 0
-            ? (pointsEarned / totalPossiblePoints) * 100
-            : 0;
+    const percentage = totalPossiblePoints > 0 ? (pointsEarned / totalPossiblePoints) * 100 : 0;
 
     return {
         weekStart,
@@ -184,12 +157,7 @@ export function calculateInsights(
         let currentWeekStart = getWeekStart(startDayId);
 
         while (currentWeekStart.getTime() <= endWeekStart.getTime()) {
-            const insight = calculateWeeklyInsight(
-                currentWeekStart,
-                taskSets,
-                dailyLogs,
-                endDayId,
-            );
+            const insight = calculateWeeklyInsight(currentWeekStart, taskSets, dailyLogs, endDayId);
             results.push({
                 bucket: currentWeekStart.toISOString(),
                 pointsEarned: insight.pointsEarned,

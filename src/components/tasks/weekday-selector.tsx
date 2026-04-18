@@ -8,9 +8,7 @@ export function WeekdaySelector(props: {
     disabled?: boolean;
 }) {
     const handleToggle = (index: number, pressed: boolean) => {
-        props.onChange(
-            props.weekdays.map((v, idx) => (idx === index ? pressed : v)),
-        );
+        props.onChange(props.weekdays.map((v, idx) => (idx === index ? pressed : v)));
     };
 
     const handleToggleAll = () => {

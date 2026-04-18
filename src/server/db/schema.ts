@@ -1,15 +1,5 @@
 import { user as authUser } from "@/server/db/auth-schema";
-import {
-    pgTable,
-    text,
-    timestamp,
-    integer,
-    jsonb,
-    date,
-    index,
-    uniqueIndex,
-    uuid,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, jsonb, date, index, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { Task, TaskLayout } from "@/lib/tasks";
 import type { DailyLog } from "@/lib/daily-logs";
 
@@ -34,10 +24,7 @@ export const taskSet = pgTable(
     },
     (table) => ({
         byUserIdx: index("task_set_user_idx").on(table.userId),
-        byUserFromIdx: index("task_set_user_from_idx").on(
-            table.userId,
-            table.activeFrom,
-        ),
+        byUserFromIdx: index("task_set_user_from_idx").on(table.userId, table.activeFrom),
     }),
 );
 
@@ -52,10 +39,7 @@ export const dailyLog = pgTable(
         data: jsonb("data").$type<DailyLog>().notNull(),
     },
     (table) => ({
-        byUserDateUnique: uniqueIndex("daily_log_user_date_unique").on(
-            table.userId,
-            table.date,
-        ),
+        byUserDateUnique: uniqueIndex("daily_log_user_date_unique").on(table.userId, table.date),
         byUserIdx: index("daily_log_user_idx").on(table.userId),
         byDateIdx: index("daily_log_date_idx").on(table.date),
     }),

@@ -8,8 +8,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
     title: "Habit Tracker",
-    description:
-        "A simple app to track your habits and see your progress over time.",
+    description: "A simple app to track your habits and see your progress over time.",
     icons: [{ rel: "icon", url: "/favicon.svg", type: "image/svg+xml" }],
 };
 
@@ -18,19 +17,11 @@ const geist = Geist({
     variable: "--font-geist-sans",
 });
 
-export default function RootLayout(
-    props: Readonly<{ children: React.ReactNode }>,
-) {
+export default function RootLayout(props: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html
-            lang="en"
-            suppressHydrationWarning
-            className={`${geist.variable}`}
-        >
+        <html lang="en" suppressHydrationWarning className={`${geist.variable}`}>
             <head>
-                <PlausibleProvider
-                    domain={new URL(env.NEXT_PUBLIC_APP_URL).hostname}
-                />
+                <PlausibleProvider domain={new URL(env.NEXT_PUBLIC_APP_URL).hostname} />
             </head>
             <body className="bg-bg relative h-dvh w-dvw">
                 <TRPCReactProvider>{props.children}</TRPCReactProvider>

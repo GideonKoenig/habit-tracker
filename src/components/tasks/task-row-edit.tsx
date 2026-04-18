@@ -12,15 +12,9 @@ export function TaskRowEdit(props: {
     onCancel: () => void;
     disabled?: boolean;
 }) {
-    const [labelValue, setLabelValue] = useState<string | undefined>(
-        props.task.label,
-    );
-    const [pointsValue, setPointsValue] = useState<number | undefined>(
-        props.task.pointsPerUnit,
-    );
-    const [targetValue, setTargetValue] = useState<number | undefined>(
-        props.task.targetPerDay,
-    );
+    const [labelValue, setLabelValue] = useState<string | undefined>(props.task.label);
+    const [pointsValue, setPointsValue] = useState<number | undefined>(props.task.pointsPerUnit);
+    const [targetValue, setTargetValue] = useState<number | undefined>(props.task.targetPerDay);
 
     const handleSave = async () => {
         const trimmedLabel = labelValue?.trim();
@@ -30,8 +24,7 @@ export function TaskRowEdit(props: {
         if (isNaN(pointsNum) || pointsNum <= 0) return;
 
         const targetNum = Number(targetValue);
-        if (props.task.type === "multi" && (isNaN(targetNum) || targetNum <= 0))
-            return;
+        if (props.task.type === "multi" && (isNaN(targetNum) || targetNum <= 0)) return;
 
         const taskToSave: Partial<Task> = {
             ...props.task,
@@ -63,10 +56,7 @@ export function TaskRowEdit(props: {
                     placeholder="Target"
                     value={targetValue ?? ""}
                     onChange={(e) => {
-                        const value =
-                            e.target.value !== ""
-                                ? Number(e.target.value)
-                                : undefined;
+                        const value = e.target.value !== "" ? Number(e.target.value) : undefined;
                         setTargetValue(value);
                     }}
                     className="-ml-2.5 h-8 text-xs [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -80,30 +70,17 @@ export function TaskRowEdit(props: {
                 placeholder="Points"
                 value={pointsValue ?? ""}
                 onChange={(e) => {
-                    const value =
-                        e.target.value !== ""
-                            ? Number(e.target.value)
-                            : undefined;
+                    const value = e.target.value !== "" ? Number(e.target.value) : undefined;
                     setPointsValue(value);
                 }}
                 className="-ml-2.5 h-8 text-sm [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 disabled={props.disabled}
             />
             <div className="flex justify-end gap-1">
-                <Button
-                    size="icon"
-                    variant="outline"
-                    disabled={props.disabled}
-                    onClick={handleSave}
-                >
+                <Button size="icon" variant="outline" disabled={props.disabled} onClick={handleSave}>
                     <Check className="size-4" />
                 </Button>
-                <Button
-                    size="icon"
-                    variant="outline"
-                    disabled={props.disabled}
-                    onClick={handleCancel}
-                >
+                <Button size="icon" variant="outline" disabled={props.disabled} onClick={handleCancel}>
                     <X className="size-4" />
                 </Button>
             </div>

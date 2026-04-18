@@ -1,0 +1,20 @@
+---
+description: Core code style and architecture rules
+alwaysApply: true
+---
+
+# Project Code Guidelines
+
+- Treat `PROJECT.md` as historical planning material, not the implementation source of truth.
+- Prefer clarity, directness, and derivation over duplication.
+- Do not use single-letter abbreviations.
+- Prefer early returns and shallow control flow.
+- If a single-line `if` can be written without braces, do that.
+- Keep the most important code near the top of the file and small helpers near the bottom.
+- Do not add code comments by default.
+- Do not use manual memoization by default. Avoid `useMemo`, `useCallback`, and `React.memo` unless a verified constraint requires them.
+- Prefer named function components.
+- Do not destructure props in React component parameters or in the function body.
+- Define component props inline by default and access them as `props.someValue`.
+- Avoid speculative abstractions during migrations. Share domain logic, but keep platform-specific UI concerns separate.
+- Prefer deriving values from existing state or data instead of storing duplicates.

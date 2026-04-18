@@ -60,9 +60,7 @@ function isPromise<T = unknown>(value: unknown): value is Promise<T> {
 export function tryCatch<T>(operation: Promise<T>): Promise<Result<T>>;
 export function tryCatch<T>(operation: () => Promise<T>): Promise<Result<T>>;
 export function tryCatch<T>(operation: () => T): Result<T>;
-export function tryCatch<T>(
-    operation: Promise<T> | (() => T) | (() => Promise<T>),
-): Result<T> | Promise<Result<T>> {
+export function tryCatch<T>(operation: Promise<T> | (() => T) | (() => Promise<T>)): Result<T> | Promise<Result<T>> {
     if (typeof operation === "function") {
         try {
             const result = operation();
@@ -70,9 +68,7 @@ export function tryCatch<T>(
             if (isPromise(result)) {
                 return result
                     .then((data: T) => new Success(data))
-                    .catch(
-                        (error: unknown) => new Failure(error as TryCatchError),
-                    );
+                    .catch((error: unknown) => new Failure(error as TryCatchError));
             }
 
             return new Success(result);
@@ -88,7 +84,6 @@ export function tryCatch<T>(
 
 export function newError(error: unknown): TryCatchError {
     if (error instanceof TryCatchError) return error;
-    if (error instanceof Error)
-        return new TryCatchError(error.name, error.message);
+    if (error instanceof Error) return new TryCatchError(error.name, error.message);
     return new TryCatchError("Unknown Error", String(error));
 }

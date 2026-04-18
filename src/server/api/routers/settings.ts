@@ -8,18 +8,12 @@ import { DEFAULT_CUTOFF_HOUR } from "@/lib/settings";
 export const settingsRouter = createTRPCRouter({
     getSettings: protectedProcedure.query(async ({ ctx }) => {
         const userId = ctx.session.user.id;
-        const row = await db
-            .select()
-            .from(settings)
-            .where(eq(settings.userId, userId))
-            .limit(1);
+        const row = await db.select().from(settings).where(eq(settings.userId, userId)).limit(1);
 
         const entry = row[0];
 
         if (!entry) {
-            await db
-                .insert(settings)
-                .values({ userId, cutoffHour: DEFAULT_CUTOFF_HOUR });
+            await db.insert(settings).values({ userId, cutoffHour: DEFAULT_CUTOFF_HOUR });
             return { cutoffHour: DEFAULT_CUTOFF_HOUR };
         }
         return { cutoffHour: entry.cutoffHour };

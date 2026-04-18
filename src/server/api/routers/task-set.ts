@@ -2,11 +2,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { taskSet } from "@/server/db/schema";
-import {
-    taskSetSchema,
-    taskLayoutSchema,
-    findActiveTaskSetForDate,
-} from "@/lib/tasks";
+import { taskSetSchema, taskLayoutSchema, findActiveTaskSetForDate } from "@/lib/tasks";
 
 export const taskSetRouter = createTRPCRouter({
     getForUser: protectedProcedure.query(async ({ ctx }) => {
@@ -30,22 +26,15 @@ export const taskSetRouter = createTRPCRouter({
         return row[0] ?? null;
     }),
 
-    getForDate: protectedProcedure
-        .input(z.object({ date: z.date() }))
-        .query(async ({ ctx, input }) => {
-            const userId = ctx.session.user.id;
-            const rows = await ctx.db
-                .select()
-                .from(taskSet)
-                .where(
-                    and(
-                        eq(taskSet.userId, userId),
-                        eq(taskSet.activeFrom, input.date),
-                    ),
-                )
-                .limit(1);
-            return rows[0] ?? null;
-        }),
+    getForDate: protectedProcedure.input(z.object({ date: z.date() })).query(async ({ ctx, input }) => {
+        const userId = ctx.session.user.id;
+        const rows = await ctx.db
+            .select()
+            .from(taskSet)
+            .where(and(eq(taskSet.userId, userId), eq(taskSet.activeFrom, input.date)))
+            .limit(1);
+        return rows[0] ?? null;
+    }),
 
     upsertForDate: protectedProcedure
         .input(
@@ -66,9 +55,7 @@ export const taskSetRouter = createTRPCRouter({
 
             const latest = existing[0];
             const hasLatest = latest !== undefined;
-            const isSameDate =
-                hasLatest &&
-                latest.activeFrom.getTime() === input.date.getTime();
+            const isSameDate = hasLatest && latest.activeFrom.getTime() === input.date.getTime();
 
             if (isSameDate) {
                 const result = await ctx.db
@@ -85,10 +72,7 @@ export const taskSetRouter = createTRPCRouter({
             if (hasLatest) {
                 const dayBefore = new Date(input.date);
                 dayBefore.setDate(dayBefore.getDate() - 1);
-                await ctx.db
-                    .update(taskSet)
-                    .set({ activeTo: dayBefore })
-                    .where(eq(taskSet.id, latest.id));
+                await ctx.db.update(taskSet).set({ activeTo: dayBefore }).where(eq(taskSet.id, latest.id));
             }
 
             const result = await ctx.db
@@ -115,10 +99,7 @@ export const taskSetRouter = createTRPCRouter({
                 .where(eq(taskSet.userId, userId))
                 .orderBy(desc(taskSet.activeFrom));
 
-            const activeTaskSet = findActiveTaskSetForDate(
-                allTaskSets,
-                input.date,
-            );
+            const activeTaskSet = findActiveTaskSetForDate(allTaskSets, input.date);
 
             if (activeTaskSet) {
                 const result = await ctx.db
@@ -133,16 +114,11 @@ export const taskSetRouter = createTRPCRouter({
             if (latest) {
                 const dayBefore = new Date(input.date);
                 dayBefore.setDate(dayBefore.getDate() - 1);
-                await ctx.db
-                    .update(taskSet)
-                    .set({ activeTo: dayBefore })
-                    .where(eq(taskSet.id, latest.id));
+                await ctx.db.update(taskSet).set({ activeTo: dayBefore }).where(eq(taskSet.id, latest.id));
             }
 
             if (!latest) {
-                throw new Error(
-                    "No task set found. Please create a task set first.",
-                );
+                throw new Error("No task set found. Please create a task set first.");
             }
 
             const result = await ctx.db

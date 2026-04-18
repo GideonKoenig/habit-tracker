@@ -21,21 +21,13 @@ export function SingleTaskCard(props: {
                 date: variables.date,
             });
             const nextAll = previousAll ? [...previousAll] : [];
-            const existingIndex = nextAll.findIndex(
-                (entry) => entry.date.getTime() === variables.date.getTime(),
-            );
+            const existingIndex = nextAll.findIndex((entry) => entry.date.getTime() === variables.date.getTime());
             const optimisticEntry =
                 existingIndex >= 0
                     ? { ...nextAll[existingIndex]!, data: variables.data }
                     : {
-                          id:
-                              previousForDate?.id ??
-                              previousAll?.[0]?.id ??
-                              crypto.randomUUID(),
-                          userId:
-                              previousForDate?.userId ??
-                              previousAll?.[0]?.userId ??
-                              "",
+                          id: previousForDate?.id ?? previousAll?.[0]?.id ?? crypto.randomUUID(),
+                          userId: previousForDate?.userId ?? previousAll?.[0]?.userId ?? "",
                           date: variables.date,
                           data: variables.data,
                       };
@@ -45,19 +37,13 @@ export function SingleTaskCard(props: {
                 nextAll.push(optimisticEntry);
             }
             utils.dailyLog.getForUser.setData(undefined, nextAll);
-            utils.dailyLog.getForDate.setData(
-                { date: variables.date },
-                optimisticEntry,
-            );
+            utils.dailyLog.getForDate.setData({ date: variables.date }, optimisticEntry);
             return { previousAll, previousForDate };
         },
         onError: (_error, variables, context) => {
             if (!context) return;
             utils.dailyLog.getForUser.setData(undefined, context.previousAll);
-            utils.dailyLog.getForDate.setData(
-                { date: variables.date },
-                context.previousForDate ?? undefined,
-            );
+            utils.dailyLog.getForDate.setData({ date: variables.date }, context.previousForDate ?? undefined);
         },
         onSettled: async (_result, _error, variables) => {
             await utils.dailyLog.getForUser.invalidate();
@@ -112,21 +98,12 @@ export function SingleTaskCard(props: {
                 aria-hidden
                 className={cn(
                     "flex aspect-square h-full max-h-12 shrink items-center justify-center rounded-full border-2 text-2xl font-semibold",
-                    completed &&
-                        "border-accent-pink/30 bg-accent-pink/10 text-text/50",
-                    isDisabled &&
-                        !completed &&
-                        "bg-bg-elevated/20 text-text-muted/50 border-transparent",
-                    !completed &&
-                        !isDisabled &&
-                        "border-accent-pink/90 bg-accent-pink/90 text-text",
+                    completed && "border-accent-pink/30 bg-accent-pink/10 text-text/50",
+                    isDisabled && !completed && "bg-bg-elevated/20 text-text-muted/50 border-transparent",
+                    !completed && !isDisabled && "border-accent-pink/90 bg-accent-pink/90 text-text",
                 )}
             >
-                {completed
-                    ? "✓"
-                    : !scheduledToday && !props.editLayout
-                      ? "—"
-                      : ""}
+                {completed ? "✓" : !scheduledToday && !props.editLayout ? "—" : ""}
             </span>
         </div>
     );

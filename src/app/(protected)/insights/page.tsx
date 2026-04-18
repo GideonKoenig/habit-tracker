@@ -12,15 +12,10 @@ export default function InsightsPage() {
         mode: "relative",
     });
 
-    const { data: settings, isLoading: isLoadingSettings } =
-        api.settings.getSettings.useQuery();
+    const { data: settings, isLoading: isLoadingSettings } = api.settings.getSettings.useQuery();
 
     if (isLoadingSettings) {
-        return (
-            <div className="text-text-muted flex items-center justify-center py-20 text-sm">
-                Loading…
-            </div>
-        );
+        return <div className="text-text-muted flex items-center justify-center py-20 text-sm">Loading…</div>;
     }
 
     if (!settings) {
@@ -33,14 +28,8 @@ export default function InsightsPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            <InsightsFilters
-                settings={graphSettings}
-                setSettings={setGraphSettings}
-            />
-            <InsightsChart
-                settings={graphSettings}
-                cutoffHour={settings.cutoffHour ?? 3}
-            />
+            <InsightsFilters settings={graphSettings} setSettings={setGraphSettings} />
+            <InsightsChart settings={graphSettings} cutoffHour={settings.cutoffHour ?? 3} />
         </div>
     );
 }
